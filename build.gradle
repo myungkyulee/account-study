@@ -25,7 +25,9 @@ dependencies {
 
 	// redis client
 	implementation 'org.redisson:redisson:3.17.1'
-	// embedded redis
+
+	// embedded redis (퀄리티가 좋지는 않다)
+	// 의존성안에 불필요한 라이브러리가 있어서 제외하였다. 이것이 있으면 제대로 동작하지 않는다.
 	implementation('it.ozimov:embedded-redis:0.7.3') {
 		exclude group: "org.slf4j", module: "slf4j-simple"
 	}
