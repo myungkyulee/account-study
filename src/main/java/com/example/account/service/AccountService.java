@@ -9,11 +9,13 @@ import com.example.account.domain.AccountUser;
 import com.example.account.repository.AccountRepository;
 import com.example.account.type.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AccountService {
@@ -45,7 +47,7 @@ public class AccountService {
         return AccountDto.fromEntity(
                 accountRepository.save(
                         Account.builder()
-                                .accountUser(accountUser)
+                                .accountUser(null)
                                 .accountNumber(newAccountNumber)
                                 .balance(initialBalance)
                                 .registeredAt(LocalDateTime.now())

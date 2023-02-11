@@ -6,10 +6,12 @@ import com.example.account.dto.CreateAccount;
 import com.example.account.service.AccountService;
 import com.example.account.service.RedisTestService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class AccountController {
@@ -25,7 +27,7 @@ public class AccountController {
     @PostMapping("/account")
     public CreateAccount.Response createAccount(
             @RequestBody @Valid CreateAccount.Request request) {
-
+        log.info("[AccountController] create account");
         return CreateAccount.Response.from(
                 accountService.createAccount(
                         request.getUserId(), request.getInitialBalance()
