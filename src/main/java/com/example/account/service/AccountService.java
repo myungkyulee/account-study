@@ -38,7 +38,7 @@ public class AccountService {
                 .orElseThrow(() -> new AccountException(ErrorCode.USER_VOT_FOUND));
 
         // 최근에 등록된 계좌번호를 조회하고 거기에 1을 더해서 새로운 계좌번호를 얻는다.
-        String newAccountNumber = accountUserRepository.findFirstByOrderByIdDesc()
+        String newAccountNumber = accountRepository.findFirstByOrderByIdDesc()
                 .map(account -> Integer.parseInt(account.getAccountNumber()) + 1 + "")
                 .orElse("1000000000"); // 처음 등록되는 계좌번호
 
