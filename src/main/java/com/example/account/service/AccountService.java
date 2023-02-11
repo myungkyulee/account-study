@@ -17,11 +17,11 @@ import java.time.LocalDateTime;
 
 @Slf4j
 @Service
+
 @RequiredArgsConstructor
 public class AccountService {
     private final AccountRepository accountRepository;
     private final AccountUserRepository accountUserRepository;
-
 
     /**
      * 사용자가 있는지 조회
@@ -37,7 +37,9 @@ public class AccountService {
     public AccountDto createAccount(Long userId, Long initialBalance) {
         // user가 있다면 user를 반환하고 없다면 예외를 던진다.
         AccountUser accountUser = accountUserRepository.findById(userId)
-                .orElseThrow(() -> new AccountException(ErrorCode.USER_VOT_FOUND));
+                .orElseThrow(() -> new AccountException(ErrorCode.USER_NOT_FOUND));
+
+        validateCreateAccount(accountUser);
 
         // 최근에 등록된 계좌번호를 조회하고 거기에 1을 더해서 새로운 계좌번호를 얻는다.
         String newAccountNumber = accountRepository.findFirstByOrderByIdDesc()
@@ -47,7 +49,7 @@ public class AccountService {
         return AccountDto.fromEntity(
                 accountRepository.save(
                         Account.builder()
-                                .accountUser(null)
+                                .accountUser(accountUser)
                                 .accountNumber(newAccountNumber)
                                 .balance(initialBalance)
                                 .registeredAt(LocalDateTime.now())
@@ -55,6 +57,12 @@ public class AccountService {
                                 .build()
                 )
         );
+    }
+
+    private void validateCreateAccount(AccountUser accountUser) {
+        if (accountRepository.countByAccountUser(accountUser) >= 10) {
+            throw new AccountException(ErrorCode.MAX_ACCOUNT_PER_USER_10);
+        }
     }
 
     @Transactional
