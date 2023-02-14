@@ -5,6 +5,7 @@ import com.example.account.dto.TransactionDto;
 import com.example.account.dto.UseBalance;
 import com.example.account.service.TransactionService;
 import com.example.account.type.TransactionResultType;
+import com.example.account.type.TransactionType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +16,12 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 
+import static com.example.account.type.TransactionResultType.*;
+import static com.example.account.type.TransactionType.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -43,7 +47,7 @@ class TransactionControllerTest {
                         .amount(12345L)
                         .transactionId("transactionId")
                         .transactedAt(LocalDateTime.now())
-                        .transactionResultType(TransactionResultType.S)
+                        .transactionResultType(S)
                         .build());
         // when
 
@@ -70,7 +74,7 @@ class TransactionControllerTest {
                         .amount(12345L)
                         .transactionId("transactionId")
                         .transactedAt(LocalDateTime.now())
-                        .transactionResultType(TransactionResultType.S)
+                        .transactionResultType(S)
                         .build());
         // when
 
@@ -89,5 +93,30 @@ class TransactionControllerTest {
                 .andExpect(jsonPath("$.transactionResult").value("S"))
                 .andExpect(jsonPath("$.transactionId").value("transactionId"))
                 .andExpect(jsonPath("$.amount").value(12345L));
+    }
+
+    @Test
+    void successQueryTransaction() throws Exception {
+        // given
+        given(transactionService.queryTransaction(anyString()))
+                .willReturn(TransactionDto.builder()
+                        .accountNumber("1000000000")
+                        .amount(12345L)
+                        .transactionId("transactionId")
+                        .transactedAt(LocalDateTime.now())
+                        .transactionType(USE)
+                        .transactionResultType(S)
+                        .build());
+        // when
+
+        // then
+        mockMvc.perform(get("/transaction/1234"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.transactionType").value("USE"))
+                .andExpect(jsonPath("$.transactionResult").value("S"))
+                .andExpect(jsonPath("$.accountNumber").value("1000000000"))
+                .andExpect(jsonPath("$.amount").value(12345L))
+                .andExpect(jsonPath("$.transactionId").value("transactionId"));
     }
 }

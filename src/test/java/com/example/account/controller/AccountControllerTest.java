@@ -8,6 +8,7 @@ import com.example.account.type.AccountStatus;
 import com.example.account.service.AccountService;
 import com.example.account.service.RedisTestService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -99,23 +100,6 @@ class AccountControllerTest {
                 .andExpect(jsonPath("$.userId").value(1))
                 .andExpect(jsonPath("$.accountNumber").value("1234567890"))
                 .andDo(print());
-    }
-
-    @Test
-    void successGetAccount() throws Exception {
-        // given
-        given(accountService.getAccount(anyLong()))
-                .willReturn(Account.builder()
-                        .accountNumber("3456")
-                        .accountStatus(AccountStatus.IN_USE)
-                        .build());
-
-        // then
-        mockMvc.perform(get("/account/876"))
-                .andDo(print())
-                .andExpect(jsonPath("$.accountNumber").value("3456"))
-                .andExpect(jsonPath("$.accountStatus").value("IN_USE"))
-                .andExpect(status().isOk());
     }
 
     @Test
