@@ -16,7 +16,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -98,7 +97,6 @@ class AccountServiceTest {
 
         // then
         verify(accountRepository, times(1)).save(captor.capture());
-
         assertThat(captor.getValue().getAccountNumber()).isEqualTo("1000000000");
         assertThat(account.getUserId()).isEqualTo(12L);
     }
@@ -352,4 +350,6 @@ class AccountServiceTest {
         // then
         assertThat(e.getErrorCode()).isEqualTo(ErrorCode.USER_NOT_FOUND);
     }
+
+
 }
