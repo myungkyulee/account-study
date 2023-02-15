@@ -19,8 +19,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
 import static com.example.account.type.ErrorCode.*;

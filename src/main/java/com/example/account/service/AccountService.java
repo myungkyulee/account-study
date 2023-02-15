@@ -72,6 +72,8 @@ public class AccountService {
 
     @Transactional
     public Account getAccount(Long id) {
+        log.info("[AccountController])");
+
         if (id < 0) {
             throw new RuntimeException("Minus");
         }
