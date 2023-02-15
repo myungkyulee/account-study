@@ -1,10 +1,11 @@
 package com.example.account.controller;
 
+import com.example.account.domain.Account;
 import com.example.account.dto.AccountInfo;
 import com.example.account.dto.CreateAccount;
 import com.example.account.dto.DeleteAccount;
 import com.example.account.service.AccountService;
-import com.example.account.service.RedisTestService;
+import com.example.account.service.LockService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -18,13 +19,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AccountController {
     private final AccountService accountService;
-    private final RedisTestService redisTestService;
+    private final LockService redisTestService;
 
-
-    @GetMapping("/get-lock")
-    public String getLock() {
-        return redisTestService.getLock();
-    }
 
     @PostMapping("/account")
     public CreateAccount.Response createAccount(
@@ -41,9 +37,15 @@ public class AccountController {
     public List<AccountInfo> getAccountsByUserId(
             @RequestParam("user_id") Long id) {
 
-        return accountService.getAccountsByUserId(id).stream()
+        return accountService.getAccountsByUserId(id). stream()
                 .map(AccountInfo::from)
                 .collect(Collectors.toList());
+    }
+    @GetMapping("/account/{accountId}")
+    public Account getAccountsByAccountId(
+            @PathVariable("accountId") Long id) {
+        log.info("[AccountController])");
+        return accountService.getAccount(id);
     }
 
     @DeleteMapping("/account")
