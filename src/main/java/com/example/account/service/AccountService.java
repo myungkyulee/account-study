@@ -41,8 +41,7 @@ public class AccountService {
     @Transactional
     public AccountDto createAccount(Long userId, Long initialBalance) {
         // user가 있다면 user를 반환하고 없다면 예외를 던진다.
-        AccountUser accountUser = accountUserRepository.findById(userId)
-                .orElseThrow(() -> new AccountException(USER_NOT_FOUND));
+        AccountUser accountUser = getAccountUser(userId);
 
         validateCreateAccount(accountUser);
 
@@ -64,6 +63,12 @@ public class AccountService {
         );
     }
 
+    private AccountUser getAccountUser(Long userId) {
+        AccountUser accountUser = accountUserRepository.findById(userId)
+                .orElseThrow(() -> new AccountException(USER_NOT_FOUND));
+        return accountUser;
+    }
+
     private void validateCreateAccount(AccountUser accountUser) {
         if (accountRepository.countByAccountUser(accountUser) >= 10) {
             throw new AccountException(MAX_ACCOUNT_PER_USER_10);
@@ -82,8 +87,7 @@ public class AccountService {
 
     @Transactional
     public AccountDto deleteAccount(Long userId, String accountNumber) {
-        AccountUser accountUser = accountUserRepository.findById(userId)
-                .orElseThrow(() -> new AccountException(USER_NOT_FOUND));
+        AccountUser accountUser = getAccountUser(userId);
         Account account = accountRepository.findByAccountNumber(accountNumber)
                 .orElseThrow(() -> new AccountException(ACCOUNT_NOT_FOUND));
 
@@ -110,8 +114,7 @@ public class AccountService {
     }
 
     public List<AccountDto> getAccountsByUserId(Long id) {
-        AccountUser accountUser = accountUserRepository.findById(id)
-                .orElseThrow(() -> new AccountException(USER_NOT_FOUND));
+        AccountUser accountUser = getAccountUser(id);
 
         List<Account> accounts =
                 accountRepository.findByAccountUser(accountUser);
